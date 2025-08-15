@@ -1,0 +1,5 @@
+You are Base44. Build a production app for Pro-Shiny Cleaning Services.
+- Import OpenAPI (openapi.yaml)
+- Pages: Home (lead form → POST /api/public/leads), Get a Quote (→ POST /api/public/quotes/estimate), Book Now (→ POST /api/public/bookings + Stripe client confirm), Admin Login (/api/auth/login), Admin tables (leads, bookings).
+- Settings: API_BASE_URL, STRIPE_PUBLIC_KEY, ZAPIER_WEBHOOK_URL, ZAPIER_WEBHOOK_SECRET.
+- All reads/writes go to REST API, no internal DB.

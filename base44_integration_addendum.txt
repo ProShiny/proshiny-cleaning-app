@@ -1,0 +1,11 @@
+Base44 Integration Addendum — 2025-08-15
+Use ONLY the external backend endpoints:
+GET /api/public/services
+POST /api/public/leads
+POST /api/public/quotes/estimate
+POST /api/public/bookings
+POST /api/payments/create-intent
+POST /api/public/webhooks/zapier
+POST /api/auth/login
+GET /api/admin/leads
+GET /api/admin/bookings

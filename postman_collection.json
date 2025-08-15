@@ -1,0 +1,143 @@
+{
+  "info": {
+    "name": "ProShiny API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/health"
+      }
+    },
+    {
+      "name": "List Services",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/public/services"
+      }
+    },
+    {
+      "name": "Create Lead",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Test Lead\",\n  \"email\": \"lead@example.com\",\n  \"source\": \"web\"\n}"
+        },
+        "url": "{{baseUrl}}/api/public/leads"
+      }
+    },
+    {
+      "name": "Estimate Quote",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"service_code\": \"RES_STD\",\n  \"home_size_sqft\": 1800,\n  \"bathrooms\": 3,\n  \"addons\": [\n    \"windows\"\n  ]\n}"
+        },
+        "url": "{{baseUrl}}/api/public/quotes/estimate"
+      }
+    },
+    {
+      "name": "Create Booking",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"service_code\": \"RES_STD\",\n  \"start_at\": \"2025-09-01T14:00:00.000Z\",\n  \"end_at\": \"2025-09-01T16:00:00.000Z\",\n  \"address\": \"123 Main St\",\n  \"city\": \"Philadelphia\",\n  \"state\": \"PA\",\n  \"zip\": \"19104\",\n  \"price_cents\": 15000\n}"
+        },
+        "url": "{{baseUrl}}/api/public/bookings"
+      }
+    },
+    {
+      "name": "Create Payment Intent (Stripe)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"amount_cents\": 15000\n}"
+        },
+        "url": "{{baseUrl}}/api/payments/create-intent"
+      }
+    },
+    {
+      "name": "Admin Login",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"admin@proshinycleaningservices.com\",\n  \"password\": \"Temp123!\"\n}"
+        },
+        "url": "{{baseUrl}}/api/auth/login"
+      }
+    },
+    {
+      "name": "Admin List Leads",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{adminToken}}"
+          }
+        ],
+        "url": "{{baseUrl}}/api/admin/leads"
+      }
+    },
+    {
+      "name": "Admin List Bookings",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{adminToken}}"
+          }
+        ],
+        "url": "{{baseUrl}}/api/admin/bookings"
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8787"
+    },
+    {
+      "key": "adminToken",
+      "value": ""
+    }
+  ]
+}

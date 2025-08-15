@@ -1,0 +1,1 @@
+Create 3 zaps: lead confirmation, booking → calendar/reminder, job completed → review. Use HMAC header x-zapier-signature with shared secret. Use Gmail, Twilio, Google Calendar, Google Sheets.

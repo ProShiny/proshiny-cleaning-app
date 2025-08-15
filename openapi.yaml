@@ -1,0 +1,114 @@
+openapi: 3.0.3
+info: { title: ProShiny Cleaning Services API, version: '1.0.0' }
+servers: [ { url: https://api.yourdomain.com } ]
+paths:
+  /health:
+    get: { summary: Health check, responses: { '200': { description: OK } } }
+  /api/public/services:
+    get:
+      summary: List services
+      responses:
+        '200':
+          description: OK
+          content: { application/json: { schema: { type: array, items: { $ref: '#/components/schemas/Service' } } } }
+  /api/public/leads:
+    post:
+      summary: Create a lead
+      requestBody:
+        required: true
+        content: { application/json: { schema:
+          { type: object, properties:
+            { name: { type: string }, email: { type: string, format: email }, phone: { type: string },
+              source: { type: string, enum: [web, chatbot, ad, referral, other] }, service_code: { type: string }, notes: { type: string },
+              utm_source: { type: string }, utm_medium: { type: string }, utm_campaign: { type: string } },
+            required: [name, email] } } }
+      responses:
+        '201': { description: Created, content: { application/json: { schema: { $ref: '#/components/schemas/Lead' } } } }
+  /api/public/quotes/estimate:
+    post:
+      summary: Quote estimate
+      requestBody:
+        required: true
+        content: { application/json: { schema:
+          { type: object, properties:
+            { service_code: { type: string }, home_size_sqft: { type: number }, rooms: { type: number }, bathrooms: { type: number },
+              addons: { type: array, items: { type: string } } }, required: [service_code] } } }
+      responses:
+        '200': { description: OK, content: { application/json: { schema:
+          { type: object, properties: { estimate_cents: { type: integer }, breakdown: { type: array, items: { type: string } } } } } } }
+  /api/public/bookings:
+    post:
+      summary: Create booking
+      requestBody:
+        required: true
+        content: { application/json: { schema:
+          { type: object, properties:
+            { user_id: { type: string }, service_code: { type: string }, start_at: { type: string, format: date-time },
+              end_at: { type: string, format: date-time }, address: { type: string }, city: { type: string },
+              state: { type: string }, zip: { type: string }, notes: { type: string }, price_cents: { type: integer },
+              discount_cents: { type: integer }, coupon_code: { type: string } },
+            required: [service_code, start_at, end_at, address, city, state, zip, price_cents] } } }
+      responses:
+        '201': { description: Created, content: { application/json: { schema: { $ref: '#/components/schemas/Booking' } } } }
+        '409': { description: Time slot conflict }
+  /api/payments/create-intent:
+    post:
+      summary: Stripe PaymentIntent
+      requestBody:
+        required: true
+        content: { application/json: { schema:
+          { type: object, properties: { amount_cents: { type: integer }, currency: { type: string, default: usd }, metadata: { type: object } },
+            required: [amount_cents] } } }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: object, properties: { client_secret: { type: string } } } } } }
+  /api/public/webhooks/zapier:
+    post:
+      summary: Zapier webhook receiver
+      requestBody:
+        required: true
+        content: { application/json: { schema:
+          { type: object, properties: { signature: { type: string }, event: { type: string }, data: { type: object } } } } }
+      responses: { '200': { description: OK } }
+  /api/auth/login:
+    post:
+      summary: Admin login
+      requestBody:
+        required: true
+        content: { application/json: { schema:
+          { type: object, properties: { email: { type: string, format: email }, password: { type: string } }, required: [email, password] } } }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: object, properties: { token: { type: string } } } } } }
+  /api/admin/leads:
+    get:
+      summary: Admin list leads
+      security: [ { bearerAuth: [] } ]
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: array, items: { $ref: '#/components/schemas/Lead' } } } } }
+  /api/admin/bookings:
+    get:
+      summary: Admin list bookings
+      security: [ { bearerAuth: [] } ]
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: array, items: { $ref: '#/components/schemas/Booking' } } } } }
+components:
+  securitySchemes:
+    bearerAuth: { type: http, scheme: bearer, bearerFormat: JWT }
+  schemas:
+    Service:
+      type: object
+      properties: { id: { type: string }, name: { type: string }, code: { type: string }, description: { type: string },
+        durationMinutes: { type: integer }, basePriceCents: { type: integer }, isActive: { type: boolean },
+        createdAt: { type: string, format: date-time }, updatedAt: { type: string, format: date-time } }
+    Lead:
+      type: object
+      properties: { id: { type: string }, name: { type: string }, email: { type: string }, phone: { type: string },
+        source: { type: string }, serviceCode: { type: string }, notes: { type: string }, status: { type: string },
+        utmSource: { type: string }, utmMedium: { type: string }, utmCampaign: { type: string },
+        createdAt: { type: string, format: date-time }, updatedAt: { type: string, format: date-time } }
+    Booking:
+      type: object
+      properties: { id: { type: string }, userId: { type: string }, serviceCode: { type: string },
+        startAt: { type: string, format: date-time }, endAt: { type: string, format: date-time },
+        address: { type: string }, city: { type: string }, state: { type: string }, zip: { type: string }, notes: { type: string },
+        status: { type: string }, priceCents: { type: integer }, discountCents: { type: integer }, couponCode: { type: string },
+        createdAt: { type: string, format: date-time }, updatedAt: { type: string, format: date-time } }
