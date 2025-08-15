@@ -30,5 +30,5 @@
     "tsx": "^4.16.2",
     "typescript": "^5.5.4"
   }
-}
-npm run prisma:migrate
+}npm run prisma:migrate
+
